@@ -1,19 +1,18 @@
 package com.example.project.controllers;
 
-import com.example.project.models.dtos.CreateLocationDTO;
-import com.example.project.models.dtos.MessageResponse;
-import com.example.project.models.dtos.UpdateLocationDTO;
-import com.example.project.models.dtos.UpdateLocationUserDTO;
+import com.example.project.models.dtos.*;
 import com.example.project.models.entities.Contact;
 import com.example.project.models.entities.Location;
 import com.example.project.models.entities.Usuario;
 import com.example.project.repositories.UserRepository;
 import com.example.project.services.ContactService;
 import com.example.project.services.LocationService;
+import com.example.project.services.firebase.PushNotificationService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -48,45 +47,67 @@ public class LocationController {
     @Autowired
     private Configuration freemakerConfig;
 
+    @Autowired
+    private PushNotificationService pushNotificationService;
+
+    @Value("${app.firebase.google.maps.key}")
+    private String googleMapsApiKEY;
+
     @PostMapping("")
     @PreAuthorize("hasRole('admin') or hasRole('usuario')")
     public ResponseEntity<?> createLocation(@RequestBody CreateLocationDTO createLocationDTO) {
         try {
+            if(createLocationDTO.getType() < 1 || createLocationDTO.getType() > 2){
+                return ResponseEntity.ok(new MessageResponse(false, 7, null,
+                        "Type is Integer and it must be 1 or 2"));
+            }
             Location location = new Location();
-            location.setLatitud(createLocationDTO.getLatitude());
-            location.setLongitud(createLocationDTO.getLongitude());
+            Double la=createLocationDTO.getLatitude();
+            Double lo=createLocationDTO.getLongitude();
+            location.setLatitud(la);
+            location.setLongitud(lo);
             Usuario usuario = userRepository.findById(createLocationDTO.getId_user()).get();
             location.setUser(usuario);
-            locationService.saveLocation(location);
 
             List<Contact> contactList = contactService.getUserContactList(createLocationDTO.getId_user());
-
-            for(int i = 0; i < contactList.size(); i++) {
-                MimeMessage message2 = emailSender.createMimeMessage();
-                MimeMessageHelper helperMessage2 = new MimeMessageHelper(message2, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
-
-                Template t2 = freemakerConfig.getTemplate("mail_recive.html");
-                Map<String, Object> model2 = new HashMap<>();
-                model2.put("from", location.getUser().getNombre());
-                if(location.getDescripcion() != null) {
-                    model2.put("desc", location.getDescripcion());
-                } else {
-                    model2.put("desc", "El usuario no proporciono descripcion");
-                }
-                model2.put("longitud", location.getLongitud().toString());
-                model2.put("latitud", location.getLatitud().toString());
-                String html2 = FreeMarkerTemplateUtils.processTemplateIntoString(t2, model2);
-
-                helperMessage2.setFrom("josenasser2009@gmail.com");
-                helperMessage2.setTo(contactList.get(i).getEmail());
-
-                helperMessage2.setSubject("Alerta enviada!");
-                helperMessage2.setText(html2, true);
-                emailSender.send(message2);
+            String nombreCreador = usuario.getNombre();
+            char inicial = nombreCreador.toUpperCase().charAt(0);
+            String imgURL = "https://maps.googleapis.com/maps/api/staticmap?center="+la+","+lo+"&zoom=16&size=600x200&scale=1&markers=color:red%" +
+                    "7Clabel:"+inicial+"%7C"+la+","+lo+"&key="+googleMapsApiKEY;
+            String message = nombreCreador +" necesita tu ayuda urgentemente!";
+            if(createLocationDTO.getType() == 1){
+                location.setTitulo(message);
+                location.setDescripcion("Tu familiar/amigo se encuentra pasando un mal momento\n " +
+                        "Contáctalo lo antes posible para verificar que todo este bien!");
             }
-
+            location.setLog_url(imgURL);
+            locationService.saveLocation(location);
+            Long locId = location.getId();
+            System.out.println("Id of this location: " +locId);
+            for (Contact contact : contactList) {
+                Integer numero = contact.getTelefono();
+                if (numero == null) {
+                    continue;
+                }
+                if (userRepository.findByTelefono(numero).isEmpty()) {
+                    continue;
+                }
+                Usuario user = userRepository.findByTelefono(numero).get();
+                String token = user.getFtoken();
+                System.out.println("Token of " + user.getNombre() + " : " + token);
+                if (token != null) {
+                    Map<String, String> object = new HashMap<>();
+                    object.put("id", locId.toString());
+                    object.put("titulo", "Alerta recibida");
+                    object.put("message", message);
+                    object.put("imagenURL", imgURL);
+                    pushNotificationService.sendPushNotificationToToken(new PushNotificationRequest(
+                            "Alert", token), object);
+                }
+            }
             return ResponseEntity.ok(new MessageResponse(true, 1, location, "Ubicacion creada con exito"));
         } catch (Exception e) {
+            //System.out.println(Arrays.toString(e.getStackTrace()));
             return ResponseEntity.ok(new MessageResponse(false, 7, null, e.getMessage()));
         }
     }
