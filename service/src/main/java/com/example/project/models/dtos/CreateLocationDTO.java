@@ -7,6 +7,8 @@ public class CreateLocationDTO {
     @NotNull
     private Long id_user;
 
+    private Integer type;
+
     @NotNull
     private Double latitude;
 
@@ -44,4 +46,11 @@ public class CreateLocationDTO {
         this.longitude = longitude;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 }
