@@ -2,14 +2,14 @@ package com.example.project.models.dtos;
 
 import javax.validation.constraints.NotNull;
 
-public class CheckGeoZoneDTO {
+public class CoordinateDTO {
     @NotNull
     private String latitude;
 
     @NotNull
     private String longitude;
 
-    public CheckGeoZoneDTO(String latitude, String longitude) {
+    public CoordinateDTO(String latitude, String longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

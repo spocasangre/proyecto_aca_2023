@@ -28,6 +28,12 @@ public class Coordinate {
         super();
     }
 
+    public Coordinate(Double latitud, Double longitud, GeoZone geozona) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.geozona = geozona;
+    }
+
     public GeoZone getGeozona() {
         return geozona;
     }

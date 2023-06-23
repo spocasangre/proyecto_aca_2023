@@ -28,17 +28,16 @@ public class PointInPolygon {
             listOfCoordinates.add( new org.locationtech.jts.geom.Coordinate(coordenadas.get(i).getLatitud() , coordenadas.get(i).getLongitud() ));
         }
 
-        org.locationtech.jts.geom.Coordinate[] coordinates = listOfCoordinates.toArray(new org.locationtech.jts.geom.Coordinate[0]);
-        for (org.locationtech.jts.geom.Coordinate x : coordinates)
-            System.out.print(x.toString() + " ");
+        org.locationtech.jts.geom.Coordinate[] coordinates =
+                listOfCoordinates.toArray(new org.locationtech.jts.geom.Coordinate[0]);
+        /*for (org.locationtech.jts.geom.Coordinate x : coordinates)
+            System.out.print(x.toString() + " ");*/
         GeometryFactory geometryFactory = new GeometryFactory();
         LinearRing linearRing = geometryFactory.createLinearRing(coordinates);
 
         Polygon polygon = geometryFactory.createPolygon(linearRing, null);
 
         org.locationtech.jts.geom.Coordinate point = new org.locationtech.jts.geom.Coordinate(lat, lon); // Coordinate inside polygon
-        boolean resp = polygon.contains(geometryFactory.createPoint(point));
-        System.out.println("Bool is: " + resp);
-        return resp;
+        return polygon.contains(geometryFactory.createPoint(point));
     }
 }
