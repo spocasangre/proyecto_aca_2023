@@ -19,6 +19,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.Resource;
 import javax.swing.*;
@@ -26,6 +27,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 @SpringBootApplication
+@EnableTransactionManagement
 public class ProjectApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
 	@Resource

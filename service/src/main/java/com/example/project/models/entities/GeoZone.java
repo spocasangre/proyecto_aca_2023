@@ -32,6 +32,12 @@ public class GeoZone {
         this.createdAt = new Date();
     }
 
+    public GeoZone(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.createdAt = new Date();
+    }
+
     public List<Coordinate> getCoordenadas() {
         return coordenadas;
     }
