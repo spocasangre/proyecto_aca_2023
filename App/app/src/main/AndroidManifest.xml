@@ -21,6 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppEllas">
         <receiver
+            android:name=".ui.views.widget.AlertWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/alert_widget_info" />
+        </receiver>
+        <receiver
             android:name=".AlertWidget"
             android:exported="true">
             <intent-filter>
@@ -63,9 +74,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name=".location.LocationService" android:foregroundServiceType="location"/>
-
+        <service
+            android:name=".location.LocationService"
+            android:foregroundServiceType="location" />
         <!--
  Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more.
