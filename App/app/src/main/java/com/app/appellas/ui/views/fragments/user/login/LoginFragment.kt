@@ -1,26 +1,31 @@
 package com.app.appellas.ui.views.fragments.user.login
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.app.appellas.R
 import com.app.appellas.data.network.UIState
 import com.app.appellas.databinding.LoginFragmentBinding
+import com.app.appellas.ui.utils.checkNotificationPermission
 import com.app.appellas.ui.views.activitys.AdminBottomNavActivity
 import com.app.appellas.ui.views.activitys.BottomNavActivity
 import com.app.appellas.viewmodel.user.AuthViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.FirebaseMessagingService
 
 class LoginFragment: Fragment() {
 
@@ -159,16 +164,41 @@ class LoginFragment: Fragment() {
 
     private fun onLoginClickListener() {
         binding.loginActionLogin.setOnClickListener {
-            getFirebaseToken()
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                if (requireContext().checkNotificationPermission()) {
+                    getFirebaseToken()
+                } else {
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            } else {
+                getFirebaseToken()
+            }
         }
+    }
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if(it) {
+                getFirebaseToken()
+            } else {
+                Toast.makeText(requireContext(), "Debe habilitar el permiso de notificaciones", Toast.LENGTH_SHORT).show()
+                goSettings()
+            }
+        }
+
+    private fun goSettings() {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.provider.extra.APP_PACKAGE", requireContext().packageName)
+        startActivity(intent)
     }
 
     private fun getFirebaseToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if(!task.isSuccessful) {
+            if (!task.isSuccessful) {
                 return@addOnCompleteListener
             } else {
-                if(task.result != null) {
+                if (task.result != null) {
                     authViewModel.login(task.result)
                 }
             }
