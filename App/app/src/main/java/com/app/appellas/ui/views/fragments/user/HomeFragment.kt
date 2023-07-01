@@ -72,6 +72,7 @@ class HomeFragment: Fragment() {
 
         if(checkPermissions()) {
             if(isLocationEnabled()) {
+                Log.d("HomeFragment", "start")
                 Intent(requireActivity().applicationContext, LocationService::class.java).apply {
                     action = LocationService.ACTION_START
                     requireActivity().startService(this)

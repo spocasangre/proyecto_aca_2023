@@ -1,5 +1,6 @@
 package com.app.appellas.data.network
 
+import com.app.appellas.data.network.services.WidgetService
 import com.app.appellas.data.network.services.admin.AdminAdvisoryService
 import com.app.appellas.data.network.services.admin.AdminLocationServices
 import com.app.appellas.data.network.services.admin.AdminUserService
@@ -13,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-private const val API_BASE_URL = "https://is-app-ellas.herokuapp.com/api/"
+private const val API_BASE_URL = "http://api-app-ellas.us-east-1.elasticbeanstalk.com/api/"
 
 private var interceptor =HttpLoggingInterceptor().apply {
     level = HttpLoggingInterceptor.Level.BODY

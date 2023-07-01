@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.app.appellas.R
 import com.google.android.gms.location.LocationServices
@@ -49,6 +50,7 @@ class LocationService: Service() {
     }
 
     private fun start() {
+        Log.d("LocationService", "start")
         val notification = NotificationCompat.Builder(this, "location")
             .setContentTitle("Enviando ubicacion...")
             .setContentText("Ubicacion: null")
@@ -57,7 +59,9 @@ class LocationService: Service() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         locationClient.getLocationUpdates(10000L)
-            .catch { e -> e.printStackTrace() }
+            .catch { e -> e.printStackTrace()
+
+            }
             .onEach { location ->
                 val lat = location.latitude.toString()
                 val lon = location.longitude.toString()
