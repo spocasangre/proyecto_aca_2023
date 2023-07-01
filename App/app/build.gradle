@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     buildFeatures{
         dataBinding = true
@@ -18,8 +18,8 @@ android {
 
     defaultConfig {
         applicationId "com.app.appellas"
-        minSdk 21
-        targetSdk 32
+        minSdk 24
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
