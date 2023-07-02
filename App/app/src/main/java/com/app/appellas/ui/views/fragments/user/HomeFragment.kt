@@ -70,6 +70,8 @@ class HomeFragment: Fragment() {
 
         Log.d("Shared", "$token_session $latitude $longitude $id_user")
 
+        setUpObservers()
+
         if(checkPermissions()) {
             if(isLocationEnabled()) {
                 Log.d("HomeFragment", "start")
@@ -93,6 +95,19 @@ class HomeFragment: Fragment() {
         }
 
         setUpNavigationListeners()
+    }
+
+    private fun setUpObservers() {
+        LocationService.Notification.instance?.getNewOrder()?.observe(viewLifecycleOwner) {
+            when(it) {
+                "1" -> {
+
+                }
+                "7" -> {
+
+                }
+            }
+        }
     }
 
     private fun isLocationEnabled(): Boolean {
