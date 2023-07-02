@@ -86,7 +86,7 @@ class LocationService: Service() {
                 with(sharedPref.edit()) {
                     putString("latitude", lat)
                     putString("longitude", lon)
-                    commit()
+                    apply()
                 }
                 val body = CheckPointBody(
                     lat,
@@ -114,10 +114,16 @@ class LocationService: Service() {
                             Log.d("LocationService", "fetchData background : ${data}")
                             when(data.code) {
                                 1 -> {
-                                    sendNotification(data.message.toString())
+                                    if(!sharedPref.getBoolean("isInside", false)) {
+                                        sendNotification(data.message.toString())
+                                    }
+                                    sharedPref.edit().putBoolean("isInside", true)
                                 }
                                 7 -> {
-                                    sendNotification(data.message.toString())
+                                    if(sharedPref.getBoolean("isInside", false)) {
+                                        sendNotification(data.message.toString())
+                                    }
+                                    sharedPref.edit().putBoolean("isInside", true)
                                 }
                             }
                         }
@@ -131,8 +137,8 @@ class LocationService: Service() {
 
     private fun sendNotification(message: String) {
         val notification = NotificationCompat.Builder(this, "location")
-            .setContentTitle(message)
-            .setContentText("Ubicacion: null")
+            .setContentTitle("Alerta de zona!")
+            .setContentText(message)
             .setSmallIcon(R.drawable.ic_logo)
             .build()
 
