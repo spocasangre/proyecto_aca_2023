@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppEllas">
         <receiver
-            android:name=".AlertWidget"
+            android:name=".ui.views.widget.AlertWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

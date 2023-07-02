@@ -18,5 +18,4 @@ interface LocationService {
 
     @GET("location/detail/{id}")
     suspend fun getAlertDetail(@Header("Authorization") token: String, @Path("id") id: Int): Response<GenericResponse<LocationResponse>>
-
 }
