@@ -1,23 +1,14 @@
-package com.app.appellas
+package com.app.appellas.ui.views.widget
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.os.Build
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.TaskStackBuilder
-import androidx.core.content.ContextCompat.getSystemService
 import com.app.appellas.R
 import com.app.appellas.data.models.dtos.body.CreateLocationBody
 import com.app.appellas.data.network.AppAPI
@@ -25,8 +16,6 @@ import com.app.appellas.interactors.PostAlertaWigdet
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.net.URL
-import java.util.*
 
 
 /**
