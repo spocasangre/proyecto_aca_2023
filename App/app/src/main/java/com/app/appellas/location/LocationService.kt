@@ -136,7 +136,7 @@ class LocationService: Service() {
     }
 
     private fun sendNotification(message: String) {
-        val notification = NotificationCompat.Builder(this, "location")
+        val notification = NotificationCompat.Builder(this, "fence")
             .setContentTitle("Alerta de zona!")
             .setContentText(message)
             .setSmallIcon(R.drawable.ic_logo)
