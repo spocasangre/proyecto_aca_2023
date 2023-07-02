@@ -46,7 +46,7 @@
                 android:layout_marginEnd="@dimen/default_gap"
                 android:textSize="18sp"
                 android:layout_marginBottom="25dp"
-                tools:text="Aceptar"
+                android:text="Aceptar"
                 android:textAllCaps="false"
                 android:layout_marginTop="20dp" />
 
