@@ -4,6 +4,7 @@ import android.util.Log
 import com.app.appellas.data.models.DataState
 import com.app.appellas.data.models.dtos.body.CheckPointBody
 import com.app.appellas.data.models.dtos.body.CreateLocationBody
+import com.app.appellas.data.models.dtos.response.CheckPointResponse
 import com.app.appellas.data.models.dtos.response.CreateLocationResponse
 import com.app.appellas.data.models.dtos.response.GenericResponse
 import com.app.appellas.data.network.services.WidgetService
@@ -21,11 +22,11 @@ class PostCheckPoint(
         token: String,
         body: CheckPointBody,
         isNetworkAvailable: Boolean
-    ): Flow<DataState<GenericResponse<Boolean>>> = flow{
+    ): Flow<DataState<GenericResponse<CheckPointResponse>>> = flow{
 
         try {
 
-            emit(DataState.loading<GenericResponse<Boolean>>())
+            emit(DataState.loading<GenericResponse<CheckPointResponse>>())
 
             // just to show pagination/progress because api is fast
             delay(1000)
@@ -42,7 +43,7 @@ class PostCheckPoint(
                      throw Exception(networkRecipe.message,)
 
                  }else{*/
-                val g = GenericResponse<Boolean>(
+                val g = GenericResponse<CheckPointResponse>(
                     networkRecipe.isSuccess,
                     networkRecipe.code,
                     list,
@@ -54,11 +55,11 @@ class PostCheckPoint(
             }
         }catch (e: Exception){
 
-            emit(DataState.error<GenericResponse<Boolean>>("${e.message}"))
+            emit(DataState.error<GenericResponse<CheckPointResponse>>("${e.message}"))
         }
     }
 
-    private suspend fun getAsignadaFromNetwork(body: CheckPointBody, token: String): GenericResponse<Boolean> {
+    private suspend fun getAsignadaFromNetwork(body: CheckPointBody, token: String): GenericResponse<CheckPointResponse> {
         return service.postCheckPoint(
             "Bearer $token",
             body

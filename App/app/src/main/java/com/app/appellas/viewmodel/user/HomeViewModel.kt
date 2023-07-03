@@ -46,7 +46,7 @@ class HomeViewModel(): ViewModel() {
                 withContext(Dispatchers.Main) {
                     if(call.isSuccessful) {
                         if(errorCode == 1) {
-                            alertDetail.value = data!!
+                            alertDetail.value = data?.let { it }
                             _stateUI.value = UIState.Success
                             _stateUI.value = null
                         } else {

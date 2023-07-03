@@ -33,13 +33,17 @@ class DialogReusable: DialogFragment() {
     ): View {
         mBinding = DialogReusableBinding.inflate(inflater, container, false)
 
-        dialog?.window?.setBackgroundDrawableResource(ContextCompat.getColor(requireContext(), android.R.color.transparent))
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.setCanceledOnTouchOutside(false)
         dialog?.setCancelable(false)
 
         message = arguments?.getString(MESSAGE_KEY, "").toString()
 
         binding.title.text = message
+
+        binding.btnAceptar.setOnClickListener {
+            listener?.onAceptar(dialog!!)
+        }
 
         return binding.root
     }
