@@ -2,6 +2,7 @@ package com.app.appellas.location
 
 import android.app.Notification
 import android.app.Notification.VISIBILITY_SECRET
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -67,14 +68,14 @@ class LocationService: Service() {
 
     private fun start() {
         Log.d("LocationService", "start")
-        val notification = NotificationCompat.Builder(this, "location")
+        val notification = NotificationCompat.Builder(applicationContext, "location")
             .setContentTitle("Enviando ubicacion...")
             .setContentText("Ubicacion: null")
             .setSmallIcon(R.drawable.ic_logo)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        locationClient.getLocationUpdates(300000L)
+        locationClient.getLocationUpdates(30000L)
             .catch { e ->
                 e.printStackTrace()
             }
@@ -117,19 +118,19 @@ class LocationService: Service() {
                             when(data.code) {
                                 1 -> {
                                     if(!sharedPref.getBoolean("isInside", false)) {
+                                        Log.d("SendNotification", "1")
                                         Notification.instance?.addOrder("1")
-                                        Notification.instance?.addMensaje(data.message.toString())
                                         sendNotification(data.message.toString())
                                     }
-                                    sharedPref.edit().putBoolean("isInside", true)
+                                    sharedPref.edit().putBoolean("isInside", true).apply()
                                 }
                                 7 -> {
                                     if(sharedPref.getBoolean("isInside", false)) {
+                                        Log.d("SendNotification", "7")
                                         Notification.instance?.addOrder("7")
-                                        Notification.instance?.addMensaje(data.message.toString())
                                         sendNotification(data.message.toString())
                                     }
-                                    sharedPref.edit().putBoolean("isInside", true)
+                                    sharedPref.edit().putBoolean("isInside", false).apply()
                                 }
                             }
                         }
@@ -142,15 +143,23 @@ class LocationService: Service() {
     }
 
     private fun sendNotification(message: String) {
-        val notification = NotificationCompat.Builder(this, "fence")
-            .setContentTitle("Alerta de zona!")
-            .setContentText(message)
-            .setSmallIcon(R.drawable.ic_logo)
-            .build()
+        val channel = NotificationChannel("fence", "fence", NotificationManager.IMPORTANCE_HIGH).apply {
+            description = "fence"
+        }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
 
-        notificationManager.notify(1, notification)
+        val notification = NotificationCompat.Builder(applicationContext, "fence")
+            .setSmallIcon(R.drawable.ic_logo)
+            .setContentTitle("Alerta de zona!")
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(false)
+            .build()
+
+        val notificationManager2 = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager2.notify(/*notificationId*/ 2, notification)
     }
 
     private fun stop() {
