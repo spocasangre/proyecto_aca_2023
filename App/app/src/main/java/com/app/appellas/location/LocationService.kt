@@ -2,6 +2,7 @@ package com.app.appellas.location
 
 import android.app.Notification
 import android.app.Notification.VISIBILITY_SECRET
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -10,6 +11,8 @@ import android.content.SharedPreferences
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.app.appellas.R
 import com.app.appellas.data.models.dtos.body.CheckPointBody
@@ -65,7 +68,7 @@ class LocationService: Service() {
 
     private fun start() {
         Log.d("LocationService", "start")
-        val notification = NotificationCompat.Builder(this, "location")
+        val notification = NotificationCompat.Builder(applicationContext, "location")
             .setContentTitle("Enviando ubicacion...")
             .setContentText("Ubicacion: null")
             .setSmallIcon(R.drawable.ic_logo)
@@ -115,15 +118,19 @@ class LocationService: Service() {
                             when(data.code) {
                                 1 -> {
                                     if(!sharedPref.getBoolean("isInside", false)) {
+                                        Log.d("SendNotification", "1")
+                                        Notification.instance?.addOrder("1")
                                         sendNotification(data.message.toString())
                                     }
-                                    sharedPref.edit().putBoolean("isInside", true)
+                                    sharedPref.edit().putBoolean("isInside", true).apply()
                                 }
                                 7 -> {
                                     if(sharedPref.getBoolean("isInside", false)) {
+                                        Log.d("SendNotification", "7")
+                                        Notification.instance?.addOrder("7")
                                         sendNotification(data.message.toString())
                                     }
-                                    sharedPref.edit().putBoolean("isInside", true)
+                                    sharedPref.edit().putBoolean("isInside", false).apply()
                                 }
                             }
                         }
@@ -136,15 +143,23 @@ class LocationService: Service() {
     }
 
     private fun sendNotification(message: String) {
-        val notification = NotificationCompat.Builder(this, "fence")
-            .setContentTitle("Alerta de zona!")
-            .setContentText(message)
-            .setSmallIcon(R.drawable.ic_logo)
-            .build()
+        val channel = NotificationChannel("fence", "fence", NotificationManager.IMPORTANCE_HIGH).apply {
+            description = "fence"
+        }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
 
-        notificationManager.notify(1, notification)
+        val notification = NotificationCompat.Builder(applicationContext, "fence")
+            .setSmallIcon(R.drawable.ic_logo)
+            .setContentTitle("Alerta de zona!")
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(false)
+            .build()
+
+        val notificationManager2 = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager2.notify(/*notificationId*/ 2, notification)
     }
 
     private fun stop() {
@@ -155,6 +170,43 @@ class LocationService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         serviceScope.cancel()
+    }
+
+    class Notification {
+        private val newOrder: MutableLiveData<String>
+        private val mensaje: MutableLiveData<String>
+
+        fun getNewOrder(): LiveData<String> {
+            return newOrder
+        }
+
+        fun addOrder(orderID: String) {
+            newOrder.postValue(orderID)
+        }
+
+        fun getMensaje(): LiveData<String> {
+            return mensaje
+        }
+
+        fun addMensaje(orderID: String) {
+            mensaje.postValue(orderID)
+        }
+
+        companion object {
+            var instance: Notification? = null
+                get() {
+                    if (field == null) {
+                        field = Notification()
+                    }
+                    return field
+                }
+                private set
+        }
+
+        init {
+            newOrder = MutableLiveData()
+            mensaje = MutableLiveData()
+        }
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.app.appellas.ui.views.fragments.user
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,9 +22,10 @@ import com.app.appellas.R
 import com.app.appellas.databinding.HomepageFragmentBinding
 import com.app.appellas.location.LocationService
 import com.app.appellas.ui.views.fragments.dialog.DialogAlertFragment
+import com.app.appellas.ui.views.fragments.dialog.DialogReusable
 import java.util.jar.Manifest
 
-class HomeFragment: Fragment() {
+class HomeFragment: Fragment(), DialogReusable.AceptarDialogListener {
 
     private var mBinding: HomepageFragmentBinding? = null
     private val binding get() = mBinding!!
@@ -70,6 +72,8 @@ class HomeFragment: Fragment() {
 
         Log.d("Shared", "$token_session $latitude $longitude $id_user")
 
+        setUpObservers()
+
         if(checkPermissions()) {
             if(isLocationEnabled()) {
                 Log.d("HomeFragment", "start")
@@ -93,6 +97,38 @@ class HomeFragment: Fragment() {
         }
 
         setUpNavigationListeners()
+    }
+
+    private fun setUpObservers() {
+        LocationService.Notification.instance?.getNewOrder()?.observe(viewLifecycleOwner) {
+            when(it) {
+                "1" -> {
+                    showDialog("Ha entrado en una zona peligrosa")
+                }
+                "7" -> {
+                    showDialog("Ha salido de una zona peligrosa")
+                }
+            }
+        }
+    }
+
+    private fun showDialog(message: String) {
+        val reusableDialog = DialogReusable()
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        val prev = requireActivity().supportFragmentManager.findFragmentByTag("reusable_dialog")
+        if (prev != null) {
+            fragmentTransaction.remove(prev)
+        }
+        val bundle = Bundle()
+        bundle.putString(DialogReusable.MESSAGE_KEY, message)
+        reusableDialog.arguments = bundle
+        fragmentTransaction.addToBackStack(null)
+        reusableDialog.setAceptarListener(this@HomeFragment)
+        reusableDialog.show(requireActivity().supportFragmentManager, "reusable_dialog")
+    }
+
+    override fun onAceptar(dialog: Dialog) {
+        dialog.dismiss()
     }
 
     private fun isLocationEnabled(): Boolean {
