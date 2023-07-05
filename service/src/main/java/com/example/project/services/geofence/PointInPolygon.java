@@ -20,7 +20,9 @@ public class PointInPolygon {
 
     @Autowired
     private CoordenadasRepository coordenadasRepository;
+
     public CheckPointResponse checkPointInGeozonePolygon(Long idGeozone, Double lat, Double lon){
+
         List<Coordinate> coordenadas = coordenadasRepository.getGeozoneCoordinates(idGeozone);
 
         List<org.locationtech.jts.geom.Coordinate> listOfCoordinates = new LinkedList<>();
@@ -31,8 +33,7 @@ public class PointInPolygon {
 
         org.locationtech.jts.geom.Coordinate[] coordinates =
                 listOfCoordinates.toArray(new org.locationtech.jts.geom.Coordinate[0]);
-        /*for (org.locationtech.jts.geom.Coordinate x : coordinates)
-            System.out.print(x.toString() + " ");*/
+      
         GeometryFactory geometryFactory = new GeometryFactory();
         LinearRing linearRing = geometryFactory.createLinearRing(coordinates);
 
