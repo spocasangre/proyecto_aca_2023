@@ -20,8 +20,34 @@ public class GeozoneServiceImpl implements GeozoneService {
     }
 
     @Override
+    public List<GeoZone> getAllActive() {
+        return geozoneRepository.findAllActive();
+    }
+
+    @Override
+    public GeoZone getOneById(Long id) {
+        return geozoneRepository.findById(id).get();
+    }
+
+    @Override
     public GeoZone createGeozone(CreateGeozoneDTO createGeozoneDTO) {
-        GeoZone nuevaGeo = new GeoZone(createGeozoneDTO.getNombre(), createGeozoneDTO.getDesc());
+        GeoZone nuevaGeo = new GeoZone(createGeozoneDTO.getName(),
+                createGeozoneDTO.getDesc());
         return geozoneRepository.save(nuevaGeo);
     }
+
+    @Override
+    public GeoZone activateGeozone(Long id) {
+        GeoZone foundGeo = geozoneRepository.findById(id).get();
+        foundGeo.setActive(true);
+        return geozoneRepository.save(foundGeo);
+    }
+
+    @Override
+    public GeoZone deactivateGeozone(Long id) {
+        GeoZone foundGeo = geozoneRepository.findById(id).get();
+        foundGeo.setActive(false);
+        return geozoneRepository.save(foundGeo);
+    }
+
 }

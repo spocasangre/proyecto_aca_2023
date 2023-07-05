@@ -32,7 +32,7 @@ class DialogReusable: DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         mBinding = DialogReusableBinding.inflate(inflater, container, false)
-
+        
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.setCanceledOnTouchOutside(false)
         dialog?.setCancelable(false)
@@ -40,7 +40,7 @@ class DialogReusable: DialogFragment() {
         message = arguments?.getString(MESSAGE_KEY, "").toString()
 
         binding.title.text = message
-
+      
         binding.btnAceptar.setOnClickListener {
             listener?.onAceptar(dialog!!)
         }

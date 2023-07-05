@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface CoordenadasRepository extends JpaRepository<Coordinate, Long> {
 
-    @Query("SELECT c from coordenada c WHERE c.geozona.idGeozone = ?1")
+    @Query("SELECT c from coordenada c WHERE c.geozona.idGeozone = ?1 AND" +
+            " c.geozona.isActive = TRUE")
     List<Coordinate> getGeozoneCoordinates(Long id);
 }
