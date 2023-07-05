@@ -1,6 +1,5 @@
 package com.example.project.controllers;
 
-import com.example.project.models.dtos.CoordinateDTO;
 import com.example.project.models.dtos.CreateCoordinatesDTO;
 import com.example.project.models.dtos.MessageResponse;
 import com.example.project.models.entities.Coordinate;

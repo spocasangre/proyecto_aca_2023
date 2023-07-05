@@ -6,6 +6,7 @@ import com.app.appellas.data.network.services.admin.AdminLocationServices
 import com.app.appellas.data.network.services.admin.AdminUserService
 import com.app.appellas.data.network.services.user.BlogService
 import com.app.appellas.data.network.services.user.ContactService
+import com.app.appellas.data.network.services.user.GeozoneService
 import com.app.appellas.data.network.services.user.LocationService
 import com.app.appellas.data.network.services.user.LoginService
 import okhttp3.OkHttpClient
@@ -41,6 +42,7 @@ object AppAPI {
     val adminAdvisorServices: AdminAdvisoryService = retrofit.create(AdminAdvisoryService::class.java)
     val adminLocationServices: AdminLocationServices = retrofit.create(AdminLocationServices::class.java)
     val widgetService: WidgetService = retrofit.create(WidgetService::class.java)
+    val geozoneService: GeozoneService = retrofit.create(GeozoneService::class.java)
 }
 
 /*const val API_BASE_URL = "http://api-subastas.latmobile.com:8080/api/"

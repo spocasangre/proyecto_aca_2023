@@ -50,5 +50,4 @@ public class GeozoneServiceImpl implements GeozoneService {
         return geozoneRepository.save(foundGeo);
     }
 
-
 }
