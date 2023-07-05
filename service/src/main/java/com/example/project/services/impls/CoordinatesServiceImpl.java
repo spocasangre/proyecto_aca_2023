@@ -34,9 +34,7 @@ public class CoordinatesServiceImpl implements CoordinatesService {
         GeoZone geoEncontrada = geozoneRepository.findById(id).get();
 
         CoordinateDTO firtsCoordinate = listOfCoordinatesDTO.get(0);
-        //System.out.println("Primera coordenada: " + firtsCoordinate.getLatitude() + firtsCoordinate.getLongitude());
         CoordinateDTO lastCoordinate = listOfCoordinatesDTO.get(listOfCoordinatesDTO.size()-1);
-        //System.out.println("Ultima coordenada: " + lastCoordinate.getLatitude() + lastCoordinate.getLongitude());
 
         if( (!Objects.equals(firtsCoordinate.getLatitude(), lastCoordinate.getLatitude())) &&
                 (!Objects.equals(firtsCoordinate.getLongitude(), lastCoordinate.getLongitude()))){
@@ -44,8 +42,13 @@ public class CoordinatesServiceImpl implements CoordinatesService {
         }
 
         List<Coordinate> listExist = coordenadasRepository.getGeozoneCoordinates(id);
+        System.out.println("Id Geozona: " + id + listExist.size());
 
-        if(listExist != null){
+        if(listExist != null && listExist.size() == 1){
+            throw new RuntimeException("Geozona ya posee coordenadas (solo 1)");
+        }
+
+        if(listExist != null && listExist.size() > 1){
             throw new RuntimeException("Geozona ya posee coordenadas");
         }
 
