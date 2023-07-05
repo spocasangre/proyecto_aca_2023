@@ -29,6 +29,9 @@ public class Usuario {
     @Column(name = "codigo")
     private String codigo;
 
+    @Column(name = "ftoken")
+    private String ftoken;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol")
     private Rol rol;
@@ -137,5 +140,13 @@ public class Usuario {
 
     public void setBlogs(List<Blog> blogs) {
         this.blogs = blogs;
+    }
+
+    public String getFtoken() {
+        return ftoken;
+    }
+
+    public void setFtoken(String ftoken) {
+        this.ftoken = ftoken;
     }
 }
