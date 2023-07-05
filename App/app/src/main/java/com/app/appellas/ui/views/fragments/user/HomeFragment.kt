@@ -144,6 +144,7 @@ class HomeFragment: Fragment(), DialogReusable.AceptarDialogListener {
 
     override fun onAceptar(dialog: Dialog) {
         dialog.dismiss()
+        LocationService.Notification.instance?.addOrder("0")
     }
 
     private fun isLocationEnabled(): Boolean {
