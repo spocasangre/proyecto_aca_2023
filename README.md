@@ -13,3 +13,8 @@ https://www.figma.com/file/JPkTS7Zb2pVCVspZjj17i4/WeGotYou!?type=design&node-id=
 Puede consultar el tablero en ClickUp con las tareas realizadas para el desarrollo de We Got You!.
 
 https://app.clickup.com/42082844/v/l/4-90090377166-1
+
+### Manual de usuario
+Puede consultar el manual de usuario para tener un mejor conocimiento de We Got You!.
+
+[Manual de usuario We got you.docx.pdf](https://github.com/spocasangre/proyecto_aca_2023/files/11962614/Manual.de.usuario.We.got.you.docx.pdf)
