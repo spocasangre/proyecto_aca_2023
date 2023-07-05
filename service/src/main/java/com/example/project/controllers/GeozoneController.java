@@ -20,7 +20,6 @@ import com.example.project.models.dtos.CoordinateDTO;
 import com.example.project.models.dtos.CreateGeozoneDTO;
 import com.example.project.models.dtos.MessageResponse;
 import com.example.project.models.entities.GeoZone;
-import com.example.project.repositories.GeozoneRepository;
 import com.example.project.services.GeozoneService;
 import com.example.project.services.geofence.PointInPolygon;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,6 @@ public class GeozoneController {
     @Autowired
     private PointInPolygon pointInPolygon;
 
-    @Autowired
     private GeozoneService geozoneService;
 
     @GetMapping("")

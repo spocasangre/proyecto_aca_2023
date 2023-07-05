@@ -57,7 +57,6 @@ public class CoordinatesServiceImpl implements CoordinatesService {
         }
 
         List<Coordinate> listExist = coordenadasRepository.getGeozoneCoordinates(id);
-
         System.out.println("Id Geozona: " + id + listExist.size());
 
         if(listExist != null && listExist.size() == 1){
