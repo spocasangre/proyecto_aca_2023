@@ -153,10 +153,21 @@ public class LocationController {
     }
 
     @GetMapping("/detail/{id}")
-    @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<?> locationDetail(@PathVariable("id") String id) {
+    @PreAuthorize("hasRole('admin') or hasRole('usuario')")
+    public ResponseEntity<?> locationDetail(@PathVariable("id") Long id) {
         try {
             Location location = locationService.getLocationDetail(id);
+            return ResponseEntity.ok(new MessageResponse(true, 1, location, "Ubicacion recuperada exitosamente!"));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new MessageResponse(false, 7, null, "Error obteniendo la ubicacion"));
+        }
+    }
+
+    @GetMapping("/detail/maps_id/{id}")
+    @PreAuthorize("hasRole('admin') or hasRole('usuario')")
+    public ResponseEntity<?> locationDetailByMapId(@PathVariable("id") String id) {
+        try {
+            Location location = locationService.getLocationDetailByMapId(id);
             return ResponseEntity.ok(new MessageResponse(true, 1, location, "Ubicacion recuperada exitosamente!"));
         } catch (Exception e) {
             return ResponseEntity.ok(new MessageResponse(false, 7, null, "Error obteniendo la ubicacion"));
