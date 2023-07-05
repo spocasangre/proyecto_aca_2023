@@ -23,12 +23,22 @@ public class GeoZone {
     @Column(name = "created_at")
     private Date createdAt;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "geozona", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Coordinate> coordenadas;
 
     public GeoZone() {
         super();
+        this.createdAt = new Date();
+    }
+
+    public GeoZone(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.isActive = true;
         this.createdAt = new Date();
     }
 
@@ -66,5 +76,13 @@ public class GeoZone {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 }

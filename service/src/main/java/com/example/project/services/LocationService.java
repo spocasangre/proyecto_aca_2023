@@ -5,8 +5,10 @@ import com.example.project.models.entities.Location;
 import java.util.List;
 
 public interface LocationService {
-    Location getLocationDetail(String id);
+    Location getLocationDetail(Long id);
     Void saveLocation(Location location);
     List<Location> findAll();
     Location findById(Long id);
+
+    Location getLocationDetailByMapId(String id);
 }

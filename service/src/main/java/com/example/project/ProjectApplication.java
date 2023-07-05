@@ -19,6 +19,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.Resource;
 import javax.swing.*;
@@ -26,18 +27,14 @@ import java.util.Date;
 import java.util.TimeZone;
 
 @SpringBootApplication
-public class ProjectApplication extends SpringBootServletInitializer implements CommandLineRunner {
+@EnableTransactionManagement
+public class ProjectApplication implements CommandLineRunner {
 
 	@Resource
 	FilesStorageService storageService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectApplication.class, args);
-	}
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(ProjectApplication.class);
 	}
 
 	@Override
