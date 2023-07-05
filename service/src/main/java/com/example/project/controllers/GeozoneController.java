@@ -1,5 +1,6 @@
 package com.example.project.controllers;
 
+import com.example.project.models.dtos.CheckPointResponse;
 import com.example.project.models.dtos.CoordinateDTO;
 import com.example.project.models.dtos.CreateGeozoneDTO;
 import com.example.project.models.dtos.MessageResponse;
@@ -28,7 +29,7 @@ public class GeozoneController {
     @PreAuthorize("hasRole('admin') or hasRole('usuario')")
     public ResponseEntity<?> getAllGeoZones() {
         try {
-            List<GeoZone> lista = geozoneService.getAll();
+            List<GeoZone> lista = geozoneService.getAllActive();
             if(lista != null){
                 return ResponseEntity.ok(new MessageResponse(true, 1, lista, "Lista de geozonas obtenida existosamente"));
             }else{
@@ -40,27 +41,28 @@ public class GeozoneController {
         }
     }
 
-    @GetMapping("/checkpoint")
-    @PreAuthorize("hasRole('usuario')")
+    @PostMapping("/checkpoint")
+    @PreAuthorize("hasRole('admin') or hasRole('usuario')")
     public ResponseEntity<?> checkPointInGeozone(@RequestBody CoordinateDTO coordinateDTO) {
         try {
-            boolean resp = false;
-            List<GeoZone> lista = geozoneService.getAll();
+            CheckPointResponse response = new CheckPointResponse();
+            List<GeoZone> lista = geozoneService.getAllActive();
             if(lista == null){
-                return ResponseEntity.ok(new MessageResponse(false, 7, resp, "No se encontro ninguna geozona en db"));
+                return ResponseEntity.ok(new MessageResponse(true, 1, response, "No se encontro ninguna geozona activa en db"));
             }
-
             Double latConverted = Double.valueOf(coordinateDTO.getLatitude());
             Double lonConverted = Double.valueOf(coordinateDTO.getLongitude());
             for(GeoZone geozona : lista){
-                resp = resp || pointInPolygon.checkPointInGeozonePolygon(geozona.getIdGeozone(), latConverted, lonConverted);
+                response = pointInPolygon.checkPointInGeozonePolygon(geozona.getIdGeozone(), latConverted, lonConverted);
+                if(response.getResponse()){
+                    String name = geozoneService.getOneById(response.getIdGeozone()).getNombre();
+                    return ResponseEntity.ok(new MessageResponse(true, 1, response, "Actualmente se encuentra en una zona de riesgo\n" +
+                            "Nombre de la geozona: " + name));
+                }
             }
-            if(resp){
-                return ResponseEntity.ok(new MessageResponse(true, 1, resp, "Point inside geozone"));
-            }else{
-                return ResponseEntity.ok(new MessageResponse(false, 7, resp, "Point not inside of any geozone"));
-            }
-
+            response.setResponse(false);
+            response.setIdGeozone(-1L);
+            return ResponseEntity.ok(new MessageResponse(true, 7, response, "No se encuentra en ninguna zona de riesgo"));
         } catch (Exception e) {
             return ResponseEntity.ok(new MessageResponse(false, 7, null, "Hubo algun problema al verificar la ubicación sobre la geozona"));
         }
@@ -77,4 +79,25 @@ public class GeozoneController {
         }
     }
 
+    @GetMapping("/activate/{id}")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<?> activateGeozone(@PathVariable(value = "id") Long idGeo) {
+        try {
+            GeoZone nuevaGeo = geozoneService.activateGeozone(idGeo);
+            return ResponseEntity.ok(new MessageResponse(true, 1, nuevaGeo, "Geozona activada exitosamente"));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new MessageResponse(false, 7, null, "Hubo algun problema al activar la geozona"));
+        }
+    }
+
+    @GetMapping("/deactivate/{id}")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<?> deactivateGeozone(@PathVariable(value = "id") Long idGeo) {
+        try {
+            GeoZone nuevaGeo = geozoneService.deactivateGeozone(idGeo);
+            return ResponseEntity.ok(new MessageResponse(true, 1, nuevaGeo, "Geozona desactivada exitosamente"));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new MessageResponse(false, 7, null, "Hubo algun problema al desactivar la geozona"));
+        }
+    }
 }

@@ -1,16 +1,16 @@
 package com.example.project.models.dtos;
 
 public class CreateGeozoneDTO {
-    private String nombre;
+    private String name;
     private String desc;
 
-    public CreateGeozoneDTO(String nombre, String desc) {
-        this.nombre = nombre;
+    public CreateGeozoneDTO(String name, String desc) {
+        this.name = name;
         this.desc = desc;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
     public String getDesc() {

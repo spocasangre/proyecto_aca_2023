@@ -105,8 +105,9 @@ public class AuthController {
                     userDetails.getEmail(),
                     userDetails.getRol(),
                     roles));
+            encontrado.setFtoken(userLoginDTO.getfToken());
             userRepository.save(encontrado);
-            return ResponseEntity.ok(new MessageResponse(true, 1, lista, userRepository.save(encontrado).toString()));
+            return ResponseEntity.ok(new MessageResponse(true, 1, lista, "Usuario loggeado existosamente."));
         } else {
             return ResponseEntity.ok().body(new MessageResponse(false, 5, null, "El correo no se encuentra registrado"));
         }

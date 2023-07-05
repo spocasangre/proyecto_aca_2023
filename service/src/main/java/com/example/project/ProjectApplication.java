@@ -28,18 +28,13 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableTransactionManagement
-public class ProjectApplication extends SpringBootServletInitializer implements CommandLineRunner {
+public class ProjectApplication implements CommandLineRunner {
 
 	@Resource
 	FilesStorageService storageService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectApplication.class, args);
-	}
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(ProjectApplication.class);
 	}
 
 	@Override

@@ -8,7 +8,10 @@ import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
+    @Query("SELECT l From ubicacion l WHERE l.id = ?1")
+    public Location getLocationDetail(Long id);
+
     @Query("SELECT l From ubicacion l WHERE l.maps_id = ?1")
-    public Location getLocationDetail(String id);
+    public Location getLocationDetailByMapId(String id);
 
 }
