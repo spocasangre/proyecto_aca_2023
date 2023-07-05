@@ -29,7 +29,7 @@ class BlogsAdapter: RecyclerView.Adapter<BlogsAdapter.BlogsViewHolder>() {
 
     override fun onBindViewHolder(holder: BlogsAdapter.BlogsViewHolder, position: Int) {
         val blog = blogsList?.get(position)
-        val uri = "https://is-app-ellas.herokuapp.com/files/"+ blog?.imagenes?.get(0)?.src
+        val uri = "http://api-app-ellas.us-east-1.elasticbeanstalk.com/files/"+ blog?.imagenes?.get(0)?.src
         holder.itemView.findViewById<TextView>(R.id.item_blog_title).text = blog?.titulo
         holder.itemView.findViewById<TextView>(R.id.item_blog_subtitle).text = blog?.subtitulo
         holder.itemView.findViewById<TextView>(R.id.item_blog_description).text = blog?.descripcion
