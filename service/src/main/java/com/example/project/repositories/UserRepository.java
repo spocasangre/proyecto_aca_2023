@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByCodigo(String codigo);
 
+    Optional<Usuario> findByTelefono(Integer telefono);
+
     Boolean existsByCorreo(String correo);
 
     @Query("SELECT u FROM usuario u WHERE u.rol <> 2")

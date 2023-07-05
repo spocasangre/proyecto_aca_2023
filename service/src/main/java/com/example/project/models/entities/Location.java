@@ -19,6 +19,9 @@ public class Location {
     @Column(name = "maps_id")
     private String maps_id;
 
+    @Column(name = "log_url")
+    private String log_url;
+
     @Column(name = "titulo")
     private String titulo;
 
@@ -98,5 +101,13 @@ public class Location {
 
     public void setUser(Usuario user) {
         this.user = user;
+    }
+
+    public String getLog_url() {
+        return log_url;
+    }
+
+    public void setLog_url(String log_url) {
+        this.log_url = log_url;
     }
 }

@@ -10,6 +10,8 @@ public class UserLoginDTO {
     @NotNull
     private String password;
 
+    private String fToken;
+
     public UserLoginDTO(String email, String password) {
         super();
         this.email = email;
@@ -30,5 +32,13 @@ public class UserLoginDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getfToken() {
+        return fToken;
+    }
+
+    public void setfToken(String fToken) {
+        this.fToken = fToken;
     }
 }
