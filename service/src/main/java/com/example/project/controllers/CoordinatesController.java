@@ -1,13 +1,9 @@
 package com.example.project.controllers;
 
 import com.example.project.models.dtos.CoordinateDTO;
-import com.example.project.models.dtos.CreateGeozoneDTO;
-import com.example.project.models.dtos.ListOfCoordinatesDTO;
+import com.example.project.models.dtos.CreateCoordinatesDTO;
 import com.example.project.models.dtos.MessageResponse;
 import com.example.project.models.entities.Coordinate;
-import com.example.project.models.entities.GeoZone;
-import com.example.project.repositories.CoordenadasRepository;
-import com.example.project.repositories.GeozoneRepository;
 import com.example.project.services.CoordinatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +19,13 @@ public class CoordinatesController {
     @Autowired
     private CoordinatesService coordinatesService;
 
-    @PostMapping("/{id}")
+    @PostMapping("")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<?> createCoordinatesInGeozone(@PathVariable("id") Long id, @RequestBody List<CoordinateDTO> listOfCoordinatesDTO) {
+    public ResponseEntity<?> createCoordinatesInGeozone(@RequestBody CreateCoordinatesDTO createCoordinatesDTO) {
         try {
-            List<Coordinate> respuesta = coordinatesService.createCoordinatesInGeozone(id, listOfCoordinatesDTO);
-            return ResponseEntity.ok(new MessageResponse(true, 1, respuesta, "Coordenadas de Geozona guardadas exitosamente"));
+            List<Coordinate> respuesta = coordinatesService.createCoordinatesInGeozone(createCoordinatesDTO.getIdGeo(),
+                    createCoordinatesDTO.getCoordenadas());
+            return ResponseEntity.ok(new MessageResponse(true, 1, respuesta, "Coordenadas de geozona con id "+ createCoordinatesDTO.getIdGeo() + " guardadas exitosamente"));
         } catch (Exception e) {
             return ResponseEntity.ok(new MessageResponse(false, 7, null, e.getMessage()));
         }
